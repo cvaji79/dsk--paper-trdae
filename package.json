@@ -1,0 +1,43 @@
+# TradeBook — Fyers Proxy Server
+
+## Why this exists
+Fyers' Data/Order REST APIs don't allow direct browser access (no CORS
+headers) — that's why real-time prices and the option chain wouldn't load
+even after a successful login. This small local server makes the same
+calls from Node instead (which isn't subject to CORS) and relays the
+response back to the page.
+
+Your Fyers token still never leaves your machine — it goes from your
+browser to this local server only, then straight to Fyers.
+
+## Setup (one time)
+Requires [Node.js](https://nodejs.org) 18 or newer.
+
+```bash
+cd tradebook-server
+npm install
+```
+
+## Run it
+```bash
+npm start
+```
+You'll see:
+```
+TradeBook proxy running → http://localhost:5055
+```
+
+## Use it
+Open **http://localhost:5055** in your browser — not the old `index.html`
+file directly. Everything else (Fyers login, Paper/Live toggle, orders,
+option chain) works exactly the same as before; prices and the option
+chain should now update in real time once you're logged in.
+
+Leave this terminal window open while you trade — closing it stops the
+server. To restart later, just run `npm start` again from this folder.
+
+## What's inside
+- `server.js` — the proxy (quotes, option chain, positions, orders)
+- `public/index.html` — your TradeBook app, unchanged except it now calls
+  `/api/...` (this server) instead of `api-t1.fyers.in` directly for
+  live data and orders. Login still talks to Fyers directly, same as before.
